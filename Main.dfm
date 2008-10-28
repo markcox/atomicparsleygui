@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 292
-  Top = 159
+  Left = 382
+  Top = 246
   Width = 831
   Height = 636
   Caption = 'AtomicParsley GUI'
@@ -18,19 +18,19 @@ object frmMain: TfrmMain
   object Splitter1: TSplitter
     Left = 200
     Top = 0
-    Height = 602
+    Height = 600
   end
   object pnlMain: TPanel
     Left = 203
     Top = 0
-    Width = 620
-    Height = 602
+    Width = 612
+    Height = 600
     Align = alClient
     TabOrder = 0
     object splProcess: TSplitter
       Left = 1
-      Top = 470
-      Width = 618
+      Top = 468
+      Width = 610
       Height = 3
       Cursor = crVSplit
       Align = alBottom
@@ -38,8 +38,8 @@ object frmMain: TfrmMain
     object lsvMain: TListView
       Left = 1
       Top = 106
-      Width = 618
-      Height = 364
+      Width = 610
+      Height = 362
       Align = alClient
       Checkboxes = True
       Columns = <>
@@ -55,8 +55,8 @@ object frmMain: TfrmMain
     end
     object memProcess: TMemo
       Left = 1
-      Top = 473
-      Width = 618
+      Top = 471
+      Width = 610
       Height = 128
       Align = alBottom
       ScrollBars = ssVertical
@@ -65,7 +65,7 @@ object frmMain: TfrmMain
     object pctMain: TPageControl
       Left = 1
       Top = 1
-      Width = 618
+      Width = 610
       Height = 105
       ActivePage = tbsTV
       Align = alTop
@@ -149,7 +149,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 200
-    Height = 602
+    Height = 600
     ObjectTypes = [otFolders]
     Root = 'rfDesktop'
     UseShellImages = True
