@@ -38,11 +38,15 @@ type
     procedure btnTVApplyInfoClick(Sender: TObject);
     procedure edtPadZero(Sender: TObject);
   private
+    MovieExt : TStrings;
+
     function  PadZero(aValue : String) : String;
     procedure RunDosInMemo(DosApp: String; AMemo:TMemo);
     procedure SetupColumns;
     { Private declarations }
   public
+    constructor Create(AOwner: TComponent) ; override;
+    destructor  Destroy; override;
     { Public declarations }
   end;
 
@@ -51,7 +55,20 @@ var
 
 implementation
 
+
 {$R *.dfm}
+
+constructor TfrmMain.Create(AOwner: TComponent);
+begin
+ // ToDo: Add code to read movie extentions from ini file
+
+  MovieExt := TStringList.Create;
+  MovieExt.Add('.mp4');
+  MovieExt.Add('.m4v');
+  inherited;
+
+end;
+
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
@@ -70,6 +87,7 @@ begin
   begin
     svwMain.Path :=  sFilePath;
   end;
+
 
 end;
 
@@ -131,11 +149,14 @@ begin
   SetupColumns;
   lsvMain.Items.BeginUpdate;
 
-  if FindFirst(svwMain.Path + '\*.mp4' ,faAnyFile ,Rec) = 0 then
+  if FindFirst(svwMain.Path + '\*.*' ,faAnyFile ,Rec) = 0 then
   begin
     repeat
-      NewItem := lsvMain.Items.Add;
-      NewItem.SubItems.Add(svwMain.Path + '\' + Rec.Name);
+      if MovieExt.IndexOf(ExtractFileExt(Rec.Name)) > -1 then
+      begin
+        NewItem := lsvMain.Items.Add;
+        NewItem.SubItems.Add(svwMain.Path + '\' + Rec.Name);
+      end;
     until FindNext(Rec) <> 0;
 
     FindClose(Rec);
@@ -147,12 +168,16 @@ end;
 
 procedure TfrmMain.lsvMainSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
+var
+  CmdLine : string;
+
 begin
 
   if lsvMain.ItemIndex > - 1 then
   begin
     lsvMain.Enabled := False;
-    RunDosInMemo('AtomicParsley.exe ' + Item.SubItems[0] + ' -t +', memProcess) ;
+    CmdLine := 'AtomicParsley.exe "' + Item.SubItems[0] + '" -t +';
+    RunDosInMemo(CmdLine, memProcess) ;
     lsvMain.Enabled := True;
     self.ActiveControl := lsvMain;
   end;
@@ -332,6 +357,12 @@ begin
   else
     result := sValue;
 
+end;
+
+destructor TfrmMain.Destroy;
+begin
+  MovieExt.Free;
+  inherited;
 end;
 
 end.
