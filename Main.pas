@@ -111,6 +111,9 @@ var
   i           : integer;
   sCmdOptions : string;
   oOptions    : TStrings;
+  Rec         : TSearchRec;
+  sFileName,
+  sFileExt    : string;
 
 begin
   sCmdOptions := '';
@@ -124,13 +127,34 @@ begin
     begin
       lsvMain.Items[i].Selected := true;
       lsvMain.Enabled := False;
-      oOptions := lsvMain.Items.Item[i].SubItems;
+
+      oOptions    := lsvMain.Items.Item[i].SubItems;
+      sFileExt    := ExtractFileExt(oOptions[0]);
+      sFileName   := copy(ExtractFileName(oOptions[0]),0 ,pos(sFileExt, ExtractFileName(oOptions[0])) - 1);
       sCmdOptions := ' --stik "TV Show"';
       sCmdOptions := sCmdOptions + ' --TVShowName "' + oOptions[1] + '"';
       sCmdOptions := sCmdOptions + ' --TVEpisode "' + oOptions[2] + oOptions[3] +'"';
       sCmdOptions := sCmdOptions + ' --TVEpisodeNum "' + oOptions[3] + '"';
       sCmdOptions := sCmdOptions + ' --TVSeason "' + oOptions[2] +'"';
+
       RunDosInMemo('AtomicParsley.exe "' + oOptions[0] + '"' + sCmdOptions, memProcess) ;
+
+      if FindFirst(svwMain.Path + '\' + sFileName + '-temp-*' + sFileExt ,faAnyFile ,Rec) = 0 then
+      begin
+        repeat
+        if RenameFile(oOptions[0], ChangeFileExt(oOptions[0], '.BAK')) then
+        begin
+          if RenameFile(svwMain.Path + '\' + Rec.Name, oOptions[0]) then
+          begin
+            DeleteFile(ChangeFileExt(oOptions[0], '.BAK'));
+          end;
+        end;
+
+        until FindNext(Rec) <> 0;
+        FindClose(Rec);
+      end;
+
+
       lsvMain.Enabled := True;
     end;
   end;
